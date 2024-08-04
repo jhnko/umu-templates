@@ -1,0 +1,27 @@
+# Uses the new PowerShell, and not the old "Windows PowerShell" (powershell.exe).
+set windows-shell := ["pwsh.exe", "-NoLogo", "-Command"]
+
+# Build the project using maven
+build:
+    mvn compile
+
+# Compile and run
+run:
+     mvn compile exec:java --quiet
+
+# Compile and run with Maven output
+run-loud:
+    mvn compile exec:java
+
+# Run unit tests
+test:
+    mvn test
+
+# Generate Javadoc
+doc:
+    mvn javadoc:javadoc
+    @echo "Javadocs are located at target/site/apidocs/index.html"
+
+# Remove compiled files
+clean:
+    mvn clean
