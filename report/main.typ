@@ -55,7 +55,7 @@
 // Assignments usually follow the pattern "Obligatorisk uppgift 1", "Obligatorisk uppgift 2", etc.
 // Feel free to just use `subtitle` and `top_left_title` directly.
 #let assignment = (
-  name: "Robot",
+  name: "Uppgiftsnamn",
   number: 1,
   type: if lang == "sv" {
     "Obligatorisk uppgift"
@@ -92,15 +92,67 @@
 
 Skriv en introduktion här.
 
-= Fler rubrikar
+= En till rubrik
 
-Fortsätt skriva rapporten här.
+Planeten _Caladan_ är Paul Atreides hemvärld @dune.
 
-== En underrubrik
+Nu ska jag visa lite matte och kod.
 
-$0.5$
+== Matematik <math>
 
+Jag vet att om $a > b$ och $b > c$ så är $a > c$.
 
-Caladan är Paul Atreides hemvärld. @dune
+Igår insåg jag även att två halvor blir en hel:
+$
+0.5 + 0.5 = 1
+$
+
+== Programmering
+
+Rust är ett vackert programmeringsspråk, kolla här:
+```rust
+fn main() {
+  let apples_per_bag = vec![5, 4, 3, 5, 7, 2];
+
+  let total_apples = grades.iter().sum();
+  let bag_count = apples_per_bag.len();
+
+  println!("We have {total_apples} apples in the {bag_count} bags.");
+}
+```
+
+Som ni såg så använde jag mina additionskunskaper, som jag demonstrerade i avsnitt @math.
+
+#figure(
+  caption: [Mängden frukt på kontoret.],
+  table(
+    columns: 2,
+    table.header([Frukt], [Antal]),
+    [Äpple, 5],
+    [Apelsin, 3],
+    [Banan], [2],
+    [Päron], [4],
+    [Kiwi], [1],
+  )
+)
+
+#let thin_black = 0.6pt + black
+
+#figure(
+  caption: [Mängden bilar på parkeringen.],
+  table(
+    columns: 2,
+    stroke: none,
+    table.header([Bilfärg], table.vline(stroke: thin_black), [Antal]),
+    table.hline(stroke: thin_black),
+    [Svart], [5],
+    [Blå], [3],
+    [Röd], [2],
+    [Grå], [4],
+    [Gul], [1],
+  )
+)
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquet tempus mattis. Vivamus molestie non ligula at tristique. Fusce tincidunt a turpis eget pretium. Vivamus odio orci, congue sit amet risus a, consequat feugiat eros. Suspendisse potenti. Pellentesque feugiat malesuada egestas. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque aliquet porttitor tempus. In et lectus nulla. Aliquam vel arcu aliquam, porta felis scelerisque, placerat massa. Donec dapibus pulvinar interdum. In at lobortis sem. Nam lacinia ex non tempor pulvinar. Nullam luctus blandit sem a facilisis. Duis et magna pretium, tempor mauris at, congue eros.
 
 #bibliography("reference.yml",style: "./karlstad-universitet-harvard.csl", title: if lang == "sv" { "Referenser" } else { "References" })
