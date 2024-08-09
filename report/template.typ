@@ -33,11 +33,235 @@
   return month
 }
 
-#let format_date(lang, date) = {
+#let format_date(date, lang: none) = {
   if lang == "sv" [
     #date.day() #swedish_month(date.month()) #date.year()
   ] else {
     date.display("[month repr:long] [day padding:none], [year]")
+  }
+}
+
+#let is_outline_page = state("is_outline_page", false)
+#let last_outline_page = state("last_outline_page", false)
+
+#let page_header(
+  subtitle: none, // Text in the top-left corner
+  skip_chapter_numbers_for: () // A list of chapter names to skip numbering for
+) = locate(loc => {
+    let page_number = counter(page).at(loc).first()
+
+    // In this context, a "chapter" would be a level 1 heading
+
+    let chapter_headings = query(heading.where(level: 1), loc).rev()
+
+    let chapter_heading = chapter_headings
+               .find(h => h.location().page() <= loc.page())
+
+    let chapter_number = counter(heading).at(chapter_heading.location()).first()
+
+    if page_number > 0 {
+      if chapter_heading != none {
+        let numbering_scheme = if chapter_heading.numbering != none {
+          chapter_heading.numbering
+        } else {
+          "1."
+        }
+
+        let chapter = (
+          name: chapter_heading.body,
+          number: chapter_number
+        )
+
+        let can_number_chapter = (not is_outline_page.at(loc)) and chapter_number != none
+        let should_number_chapter = not skip_chapter_numbers_for.contains(chapter.name.text)
+
+        let num_text = if can_number_chapter and should_number_chapter {
+          numbering(numbering_scheme, chapter_number)
+        } else {
+          none
+        }
+
+        block(below: 0.5em)[
+          #smallcaps(subtitle) #h(1fr) #num_text #chapter.name
+        ]
+        line(length: 100%)
+      }
+    }
+  })
+
+#let pagefooter(date: none, lang: none) = locate(loc => {
+  let pagenumber = counter(page).at(loc).first()
+
+  if pagenumber == 0 {
+    if authors.find(author => username == "c23jkt") == none {
+      let typst_link = link("https://typst.app/")[Typst]
+      let template_author_mail_link = link("mailto:c23jkt@cs.umu.se")[`c23jkt`]
+
+      let template_author_disclaimer = if lang == "sv" [
+        Rapportmall översatt till #typst_link av #template_author_mail_link
+      ] else [
+        Report template translated to #typst_link by #template_author_mail_link
+      ]
+
+      linebreak()
+      linebreak()
+      text(size: 10pt, template_author_disclaimer)
+    }
+  } else [
+    #line(length: 100%)
+    #columns(3)[
+      // #author.name, #username
+
+      #colbreak()
+
+      #set align(center)
+
+      #if is_outline_page.at(loc) or last_outline_page.at(loc) {
+        counter(page).display("i")
+      } else {
+        counter(page).display()
+      }
+
+      #colbreak()
+
+      #set align(right)
+
+      #format_date(date, lang: lang)
+    ]
+  ]
+})
+
+#let title_page(
+  title: none,
+  subtitle: none,
+  authors: none,
+  top_left_title: none,
+  graders: (),
+  graders_label: none,
+  date: none,
+  lang: none,
+) = {
+  set table(stroke: TABLE_STROKE)
+
+  let department = authors.at(0).department.at(lang)
+
+  columns(2)[
+    #text(
+      size: 13pt,
+      weight: "bold",
+      block(
+        above: 5cm,
+      )[
+      #upper([Umeå universitet]) \
+      #department \
+      #top_left_title
+      ]
+    )
+
+    #colbreak()
+
+    #set align(right)
+
+    *#format_date(date, lang: lang)*
+  ]
+
+  v(4cm)
+
+  if title != none {
+    align(center)[
+      #block(
+        inset: 1em,
+        width: 75%,
+        below: 1em,
+      )[
+        #text(
+          size: 24pt,
+          )[
+            #title
+      ]
+    ]]
+  }
+  
+
+  if subtitle != none {
+    align(center,
+      block(
+        inset: 1em,
+        text(
+        weight: "thin",
+        size: 20pt,
+        )[
+          #subtitle
+        ]
+      )
+    )
+  }
+
+  // The DOA template had labels for name and username
+  // let name_label = if lang == "sv" [Namn] else [Name]
+  // let username_label = if lang == "sv" [Användarnamn] else [Username]
+
+  if authors != none {
+    align(center,
+      block(
+        height: 8em,
+        inset: 1em,
+        grid(
+          columns: array.range(authors.len()).map(n => auto),
+          row-gutter: 1.5em,
+          column-gutter: 3em,
+          ..authors.map(author => {
+            [
+              #set align(center)
+              #set text(size: 13pt)
+
+              #author.name
+            ]
+          }),
+          ..authors.map(author => block(
+            if "email" in author {
+              let link_title = if "username" in author {
+                author.username
+              } else {
+                author.email
+              }
+
+              let email_link = "mailto:" + author.email
+
+              link(email_link)[#raw(link_title)]
+            } else {
+              if "username" in author {
+                raw(author.username)
+              }
+            }))
+        )
+      )
+    )
+  }
+
+  v(1fr)
+
+  // // Deprecated feature of title page
+  // 
+  
+  let graders_label = if graders_label != none {
+    graders_label
+  } else {
+    if lang == "sv" [Labrättare] else [Graders]
+  }
+
+  if graders != none {
+    align(
+      center,
+      block()[
+        #text(size: 14pt)[
+          *#graders_label*
+        ] \
+        #text(size: 12pt)[
+          #graders.join(pagebreak())
+        ]
+      ]
+    )
   }
 }
 
@@ -48,7 +272,9 @@
   subtitle: none,
   top_left_title: none,
   date: datetime.today(),
-  chapter_count: none,
+  graders: (),
+  graders_label: none,
+  skip_chapter_numbers_for: ("References", "Referenser"),
   abstract: none,
   cols: 1,
   margin: (x: 1.25in, y: 1.25in),
@@ -88,93 +314,17 @@
   
   counter(page).update(0)
 
-  let is_outline_page = state("is_outline_page", false)
-  let last_outline_page = state("last_outline_page", false)  
-
-  let date_text = format_date(lang, date)
-  
-
-  let pageheader = locate(loc => {
-    let pagenumber = counter(page).at(loc).first()
-
-    let chapter_headings = query(heading.where(level: 1), loc).rev()
-
-    let current_chapter_heading = chapter_headings
-               .find(h => h.location().page() <= loc.page())
-
-    let current_chapter_count = counter(heading).at(current_chapter_heading.location()).first()
-
-    if pagenumber > 0 {
-      if current_chapter_heading != none {
-        let n = if current_chapter_heading.numbering != none {
-          current_chapter_heading.numbering
-        } else {
-          "1."
-        }
-        let current_chapter_name = current_chapter_heading.body
-
-        let num_text = if (not is_outline_page.at(loc)) and current_chapter_count != none {
-          numbering(n, current_chapter_count)
-        } else {
-          none
-        }
-
-        block(below: 0.5em)[
-          #smallcaps(subtitle) #h(1fr) #num_text #current_chapter_name
-        ]
-        line(length: 100%)
-      }
-    }
-  })
-  
-  let pagefooter = locate(loc => {
-    let pagenumber = counter(page).at(loc).first()
-
-    if pagenumber == 0 {
-      if authors.find(author => username == "c23jkt") == none {
-
-        let typst_link = link("https://typst.app/")[Typst]
-        let template_author_mail_link = link("mailto:c23jkt@cs.umu.se")[`c23jkt`]
-
-        let template_author_disclaimer = if lang == "sv" [
-          Rapportmall översatt till #typst_link av #template_author_mail_link
-        ] else [
-          Report template translated to #typst_link by #template_author_mail_link
-        ]
-
-        linebreak()
-        linebreak()
-        text(size: 10pt, template_author_disclaimer)
-      }
-    } else [
-      #line(length: 100%)
-      #columns(3)[
-   //      #author.name, #username
-
-        #colbreak()
-
-        #set align(center)
-
-        #if is_outline_page.at(loc) or last_outline_page.at(loc) {
-          counter(page).display("i")
-        } else {
-          counter(page).display()
-        }
-
-        #colbreak()
-
-        #set align(right)
-        #date_text
-      ]
-    ]
-  })
-  
-
   set page(
     paper: paper,
     margin: margin,
-    header: pageheader,
-    footer: pagefooter
+    header: page_header(
+      subtitle: subtitle,
+      skip_chapter_numbers_for: skip_chapter_numbers_for
+    ),
+    footer: pagefooter(
+      date: date,
+      lang: lang
+    )
   )
   
 
@@ -184,164 +334,40 @@
     font: font,
     size: fontsize
   )
-           
 
-  set table(stroke: TABLE_STROKE)
-
-  let department = authors.at(0).department.at(lang)
-
-  columns(2)[
-        #text(
-          size: 13pt,
-          weight: "bold",
-          block(
-            above: 5cm,
-          )[
-          #upper([Umeå universitet]) \
-          #department \
-          #top_left_title
-          ]
-        )
-
-        #colbreak()
-
-        #set align(right)
-
-        *#date_text*
-  ]
-
-  v(4cm)
-
-  if title != none {
-    align(center)[
-      #block(
-        inset: 1em,
-        width: 75%,
-        below: 1em,
-      )[
-        #text(
-          size: 24pt,
-          )[
-            #title
-      ]
-    ]]
-  }
-  
-
-  if subtitle != none {
-    align(center,
-      block(
-        inset: 1em,
-        text(
-        weight: "thin",
-        size: 20pt,
-        )[
-          #subtitle
-        ]
-      )
-    )
-  }
-  
-
-  let name_label = if lang == "sv" [Namn] else [Name]
-  let username_label = if lang == "sv" [Användarnamn] else [Username]
-
-  let author_info = authors.map(author => {
-    
-  })
-
-  if authors != none {
-    align(center,
-      block(
-        height: 8em,
-        inset: 1em,
-        grid(
-          columns: array.range(authors.len()).map(n => auto),
-          row-gutter: 1.5em,
-          column-gutter: 3em,
-          ..authors.map(author => {
-            [
-              #set align(center)
-              #set text(size: 13pt)
-
-              #author.name
-            ]
-          }),
-          ..authors.map(author => block(
-            if "email" in author {
-              let link_title = if "username" in author {
-                author.username
-              } else {
-                author.email
-              }
-
-              let email_link = "mailto:" + author.email
-
-              link(email_link)[#raw(link_title)]
-            } else {
-              if "username" in author {
-                raw(author.username)
-              }
-            }))
-        )
-      )
-    )
-  }
-  
-
-  v(1fr)
-  
+  title_page(
+    title: title,
+    subtitle: subtitle,
+    authors: authors,
+    top_left_title: top_left_title,
+    graders: graders,
+    graders_label: graders_label,
+    date: date,
+    lang: lang,
+  )
 
   set par(justify: true)
-
   set heading(numbering: "1.1")
 
-  // // Deprecated feature of reports
-  // 
-
-  // let graders_label = if lang == "sv" [Labrättare] else [Graders]
-  
-
-  // align(
-  //   center,
-  //   block()[
-  //     #text(size: 14pt)[
-  //       *#graders_label*
-  //     ] \
-  //     #text(size: 12pt)[
-  //       #graders
-  //     ]
-  //   ]
-  // )
-  
-
   is_outline_page.update(true)
-  
 
   pagebreak()
-
   
   counter(page).update(1)
-
   outline(indent: true)
 
   last_outline_page.update(true)
   is_outline_page.update(false)
   
-
   pagebreak()
   
-
   last_outline_page.update(false)
   
-
   set page(
     numbering: "1"
   )
   
   counter(page).update(1)
-  
-
 
   if cols == 1 {
     doc
