@@ -241,16 +241,13 @@
 
   v(1fr)
 
-  // // Deprecated feature of title page
-  // 
-  
   let graders_label = if graders_label != none {
     graders_label
   } else {
     if lang == "sv" [Labrättare] else [Graders]
   }
 
-  if graders != none {
+  if graders.len() > 0 {
     align(
       center,
       block()[
