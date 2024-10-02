@@ -1,7 +1,4 @@
 #import "@preview/codelst:2.0.1": sourcecode, code-frame
-#import "@preview/cetz:0.2.2": *
-#import "@preview/fletcher:0.4.4" as fletcher: node, edge
-#import "@preview/drafting:0.2.0": margin-note, set-page-properties
 
 #import "template.typ": *
 
