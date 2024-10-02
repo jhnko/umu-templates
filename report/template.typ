@@ -146,15 +146,7 @@
   let department = authors.at(0).department.at(lang)
 
   columns(2)[
-    #text(
-      size: 13pt,
-      weight: "bold",
-      block(above: 5cm)[
-        #upper([Umeå universitet]) \
-        #department \
-        #top_left_title
-      ],
-    )
+    // Empty top left corner.
 
     #colbreak()
 
