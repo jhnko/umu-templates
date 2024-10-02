@@ -4,10 +4,11 @@
 #let TABLE_STROKE = 0.5pt + black
 
 #show terms: it => {
-  it.children
+  it
+    .children
     .map(child => [
-      #strong[#child.term]
-      #block(inset: (left: 1.5em, top: -0.4em))[#child.description]
+        #strong[#child.term]
+        #block(inset: (left: 1.5em, top: -0.4em))[#child.description]
       ])
     .join()
 }
@@ -25,11 +26,11 @@
     "september",
     "oktober",
     "november",
-    "december"
+    "december",
   )
 
   let month = months.at(month_num - 1)
-  
+
   return month
 }
 
@@ -48,46 +49,45 @@
   subtitle: none, // Text in the top-left corner
   skip_chapter_numbers_for: () // A list of chapter names to skip numbering for
 ) = locate(loc => {
-    let page_number = counter(page).at(loc).first()
+  let page_number = counter(page).at(loc).first()
 
-    // In this context, a "chapter" would be a level 1 heading
+  // In this context, a "chapter" would be a level 1 heading
 
-    let chapter_headings = query(heading.where(level: 1), loc).rev()
+  let chapter_headings = query(heading.where(level: 1), loc).rev()
 
-    let chapter_heading = chapter_headings
-               .find(h => h.location().page() <= loc.page())
+  let chapter_heading = chapter_headings.find(h => h.location().page() <= loc.page())
 
-    let chapter_number = counter(heading).at(chapter_heading.location()).first()
+  let chapter_number = counter(heading).at(chapter_heading.location()).first()
 
-    if page_number > 0 {
-      if chapter_heading != none {
-        let numbering_scheme = if chapter_heading.numbering != none {
-          chapter_heading.numbering
-        } else {
-          "1."
-        }
-
-        let chapter = (
-          name: chapter_heading.body,
-          number: chapter_number
-        )
-
-        let can_number_chapter = (not is_outline_page.at(loc)) and chapter_number != none
-        let should_number_chapter = not skip_chapter_numbers_for.contains(chapter.name.text)
-
-        let num_text = if can_number_chapter and should_number_chapter {
-          numbering(numbering_scheme, chapter_number)
-        } else {
-          none
-        }
-
-        block(below: 0.5em)[
-          #smallcaps(subtitle) #h(1fr) #num_text #chapter.name
-        ]
-        line(length: 100%)
+  if page_number > 0 {
+    if chapter_heading != none {
+      let numbering_scheme = if chapter_heading.numbering != none {
+        chapter_heading.numbering
+      } else {
+        "1."
       }
+
+      let chapter = (
+        name: chapter_heading.body,
+        number: chapter_number,
+      )
+
+      let can_number_chapter = (not is_outline_page.at(loc)) and chapter_number != none
+      let should_number_chapter = not skip_chapter_numbers_for.contains(chapter.name.text)
+
+      let num_text = if can_number_chapter and should_number_chapter {
+        numbering(numbering_scheme, chapter_number)
+      } else {
+        none
+      }
+
+      block(below: 0.5em)[
+        #smallcaps(subtitle) #h(1fr) #num_text #chapter.name
+      ]
+      line(length: 100%)
     }
-  })
+  }
+})
 
 #let pagefooter(date: none, lang: none) = locate(loc => {
   let pagenumber = counter(page).at(loc).first()
@@ -149,13 +149,11 @@
     #text(
       size: 13pt,
       weight: "bold",
-      block(
-        above: 5cm,
-      )[
-      #upper([Umeå universitet]) \
-      #department \
-      #top_left_title
-      ]
+      block(above: 5cm)[
+        #upper([Umeå universitet]) \
+        #department \
+        #top_left_title
+      ],
     )
 
     #colbreak()
@@ -171,29 +169,29 @@
     align(center)[
       #block(
         inset: 1em,
+        above: 4em,
         width: 75%,
         below: 1em,
       )[
-        #text(
-          size: 24pt,
-          )[
-            #title
-      ]
-    ]]
+        #text(size: 24pt)[
+          #title
+        ]
+      ]]
   }
-  
+
 
   if subtitle != none {
-    align(center,
+    align(
+      center,
       block(
         inset: 1em,
         text(
-        weight: "thin",
-        size: 20pt,
+          weight: "thin",
+          size: 20pt,
         )[
           #subtitle
-        ]
-      )
+        ],
+      ),
     )
   }
 
@@ -202,9 +200,9 @@
   // let username_label = if lang == "sv" [Användarnamn] else [Username]
 
   if authors != none {
-    align(center,
+    align(
+      center,
       block(
-        height: 8em,
         inset: 1em,
         grid(
           columns: array.range(authors.len()).map(n => auto),
@@ -213,29 +211,28 @@
           ..authors.map(author => {
             [
               #set align(center)
-              #set text(size: 13pt)
+              #set text(size: 14pt)
 
               #author.name
             ]
           }),
-          ..authors.map(author => block(
-            if "email" in author {
-              let link_title = if "username" in author {
-                author.username
-              } else {
-                author.email
-              }
-
-              let email_link = "mailto:" + author.email
-
-              link(email_link)[#raw(link_title)]
+          ..authors.map(author => block(if "email" in author {
+            let link_title = if "username" in author {
+              author.username
             } else {
-              if "username" in author {
-                raw(author.username)
-              }
-            }))
-        )
-      )
+              author.email
+            }
+
+            let email_link = "mailto:" + author.email
+
+            link(email_link)[#raw(link_title)]
+          } else {
+            if "username" in author {
+              raw(author.username)
+            }
+          }))
+        ),
+      ),
     )
   }
 
@@ -257,7 +254,7 @@
         #text(size: 12pt)[
           #graders.join(pagebreak())
         ]
-      ]
+      ],
     )
   }
 }
@@ -287,28 +284,32 @@
 
   // Decimal comma for Swedish
   show math.equation: it => if lang == "sv" {
-      show regex("\d+\.\d+"): it => {show ".": {","+h(0pt)}
-          it}
+    show regex("\d+\.\d+"): it => {
+      show ".": {
+        "," + h(0pt)
+      }
       it
+    }
+    it
   } else {
     it
   }
 
   show heading: it => {
     set text(weight: "regular")
-  
+
     let above = if it.level > 1 {
       2em
     } else {
       1em
     }
-  
+
     block(
       above: above,
-      it
+      it,
     )
   }
-  
+
   counter(page).update(0)
 
   set page(
@@ -316,20 +317,20 @@
     margin: margin,
     header: page_header(
       subtitle: subtitle,
-      skip_chapter_numbers_for: skip_chapter_numbers_for
+      skip_chapter_numbers_for: skip_chapter_numbers_for,
     ),
     footer: pagefooter(
       date: date,
-      lang: lang
-    )
+      lang: lang,
+    ),
   )
-  
+
 
   set text(
     lang: lang,
     region: region,
     font: font,
-    size: fontsize
+    size: fontsize,
   )
 
   title_page(
@@ -349,21 +350,19 @@
   is_outline_page.update(true)
 
   pagebreak()
-  
+
   counter(page).update(1)
   outline(indent: true)
 
   last_outline_page.update(true)
   is_outline_page.update(false)
-  
+
   pagebreak()
-  
+
   last_outline_page.update(false)
-  
-  set page(
-    numbering: "1"
-  )
-  
+
+  set page(numbering: "1")
+
   counter(page).update(1)
 
   if cols == 1 {

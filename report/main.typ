@@ -7,7 +7,8 @@
 
 // Makes the code listings look a bit nicer.
 #let code-frame = code-frame.with(
-  fill: none, stroke: 0.6pt + luma(150)
+  fill: none,
+  stroke: 0.6pt + luma(150),
 )
 #let sourcecode = sourcecode.with(frame: code-frame)
 
@@ -22,7 +23,7 @@
 
   block(
     above: above,
-    it
+    it,
   )
 }
 
@@ -34,7 +35,7 @@
     // username: "c00abc",
     email: "c00abc@cs.umu.se",
     programme: (
-      sv: "Civilingenjörsprogrammet i teknisk datavetenskap", 
+      sv: "Civilingenjörsprogrammet i teknisk datavetenskap",
       en: "Master of Science Programme in Computing Science and Engineering"
     ),
     department: (
@@ -46,7 +47,7 @@
 
 #let course = (
   name: "Kursnamn",
-  code: "5DV999"
+  code: "5DV999",
 )
 
 // Specify the language of the document here.
@@ -81,8 +82,6 @@
   doc,
 )
 
-#set-page-properties()
-
 // The choice of headings is completely up to you.
 #if lang == "sv" [
   = Introduktion
@@ -104,7 +103,7 @@ Jag vet att om $a > b$ och $b > c$ så är $a > c$.
 
 Igår insåg jag även att två halvor blir en hel:
 $
-0.5 + 0.5 = 1
+  0.5 + 0.5 = 1
 $
 
 == Programmering
@@ -128,12 +127,11 @@ Som ni såg så använde jag mina additionskunskaper, som jag demonstrerade i av
   table(
     columns: 2,
     table.header([Frukt], [Antal]),
-    [Äpple, 5],
-    [Apelsin, 3],
+    [Äpple, 5], [Apelsin, 3],
     [Banan], [2],
     [Päron], [4],
     [Kiwi], [1],
-  )
+  ),
 )
 
 #let thin_black = 0.6pt + black
@@ -150,9 +148,17 @@ Som ni såg så använde jag mina additionskunskaper, som jag demonstrerade i av
     [Röd], [2],
     [Grå], [4],
     [Gul], [1],
-  )
+  ),
 )
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquet tempus mattis. Vivamus molestie non ligula at tristique. Fusce tincidunt a turpis eget pretium. Vivamus odio orci, congue sit amet risus a, consequat feugiat eros. Suspendisse potenti. Pellentesque feugiat malesuada egestas. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque aliquet porttitor tempus. In et lectus nulla. Aliquam vel arcu aliquam, porta felis scelerisque, placerat massa. Donec dapibus pulvinar interdum. In at lobortis sem. Nam lacinia ex non tempor pulvinar. Nullam luctus blandit sem a facilisis. Duis et magna pretium, tempor mauris at, congue eros.
 
-#bibliography("reference.yml",style: "./karlstad-universitet-harvard.csl", title: if lang == "sv" { "Referenser" } else { "References" })
+#bibliography(
+  "reference.yml",
+  style: "./karlstad-universitet-harvard.csl",
+  title: if lang == "sv" {
+    "Referenser"
+  } else {
+    "References"
+  },
+)
