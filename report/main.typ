@@ -70,7 +70,6 @@
 #show: doc => conf(
   title: [#course.code #course.name], // Feel free to use `title` directly
   subtitle: [#assignment_title #sym.dash.em #assignment.name],
-  top_left_title: assignment_title,
   margin: (x: 1.25in, y: 1.5in),
   lang: lang,
   authors: authors,
