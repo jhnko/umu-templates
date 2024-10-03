@@ -92,22 +92,7 @@
 #let pagefooter(date: none, lang: none) = locate(loc => {
   let pagenumber = counter(page).at(loc).first()
 
-  if pagenumber == 0 {
-    if authors.find(author => username == "c23jkt") == none {
-      let typst_link = link("https://typst.app/")[Typst]
-      let template_author_mail_link = link("mailto:c23jkt@cs.umu.se")[`c23jkt`]
-
-      let template_author_disclaimer = if lang == "sv" [
-        Rapportmall översatt till #typst_link av #template_author_mail_link
-      ] else [
-        Report template translated to #typst_link by #template_author_mail_link
-      ]
-
-      linebreak()
-      linebreak()
-      text(size: 10pt, template_author_disclaimer)
-    }
-  } else [
+  if pagenumber != 0 [
     #line(length: 100%)
     #columns(3)[
       // #author.name, #username
