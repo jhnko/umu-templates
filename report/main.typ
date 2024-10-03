@@ -73,6 +73,8 @@
   margin: (x: 1.25in, y: 1.5in),
   lang: lang,
   authors: authors,
+  // Disable the outline page by usings the line below:
+  outline: none,
   cols: 1,
   // Why not make the template your own and add your own parameters to the template?
   doc,

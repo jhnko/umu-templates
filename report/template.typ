@@ -252,7 +252,7 @@
   region: "SE",
   font: (),
   fontsize: 12pt,
-  bibliography: none,
+  outline: outline(indent: true),
   doc,
 ) = {
   show figure.where(kind: table): set figure.caption(position: top)
@@ -321,19 +321,22 @@
   set par(justify: true)
   set heading(numbering: "1.1")
 
-  is_outline_page.update(true)
+  if (outline != none) {
 
-  pagebreak()
+    is_outline_page.update(true)
 
-  counter(page).update(1)
-  outline(indent: true)
+    pagebreak()
 
-  last_outline_page.update(true)
-  is_outline_page.update(false)
+    counter(page).update(1)
+    outline
 
-  pagebreak()
+    last_outline_page.update(true)
+    is_outline_page.update(false)
 
-  last_outline_page.update(false)
+    pagebreak()
+
+    last_outline_page.update(false)
+  }
 
   set page(numbering: "1")
 
