@@ -26,20 +26,12 @@
 
 #show figure.where(kind: table): set figure.caption(position: top)
 
-#let authors = (
-  (
+// A list of authors
+#let authors = ((
     name: "Sven Svensson",
     // username: "c00abc",
     email: "c00abc@cs.umu.se",
-    programme: (
-      sv: "Civilingenjörsprogrammet i teknisk datavetenskap",
-      en: "Master of Science Programme in Computing Science and Engineering"
-    ),
-    department: (
-      sv: "Institutionen för datavetenskap",
-      en: "Department of Computer Science"
-    ),
-  ),
+  ), // The comma is needed to make this a list with a single element rather than a dictionary.
 )
 
 #let course = (

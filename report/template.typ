@@ -127,8 +127,6 @@
 ) = {
   set table(stroke: TABLE_STROKE)
 
-  let department = authors.at(0).department.at(lang)
-
   columns(2)[
     // Empty top left corner.
 
