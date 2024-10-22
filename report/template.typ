@@ -48,73 +48,81 @@
 #let page_header(
   subtitle: none, // Text in the top-left corner
   skip_chapter_numbers_for: () // A list of chapter names to skip numbering for
-) = locate(loc => {
-  let page_number = counter(page).at(loc).first()
+) = (
+  context {
+    let page_number = counter(page).get().first()
 
-  // In this context, a "chapter" would be a level 1 heading
+    // In this context, a "chapter" would be a level 1 heading
 
-  let chapter_headings = query(heading.where(level: 1), loc).rev()
+    let chapter_headings = query(heading.where(level: 1)).rev()
 
-  let chapter_heading = chapter_headings.find(h => h.location().page() <= loc.page())
+    let chapter_heading = chapter_headings.find(h => h.location().page() <= here().page())
 
-  let chapter_number = counter(heading).at(chapter_heading.location()).first()
+    if (chapter_heading == none) {
+      return
+    }
 
-  if page_number > 0 {
-    if chapter_heading != none {
-      let numbering_scheme = if chapter_heading.numbering != none {
-        chapter_heading.numbering
-      } else {
-        "1."
+    let chapter_number = counter(heading).at(chapter_heading.location()).first()
+
+    if page_number > 0 {
+      if chapter_heading != none {
+        let numbering_scheme = if chapter_heading.numbering != none {
+          chapter_heading.numbering
+        } else {
+          "1."
+        }
+
+        let chapter = (
+          name: chapter_heading.body,
+          number: chapter_number,
+        )
+
+        let can_number_chapter = (not is_outline_page.get()) and chapter_number != none
+        let should_number_chapter = not skip_chapter_numbers_for.contains(chapter.name.text)
+
+        let num_text = if can_number_chapter and should_number_chapter {
+          numbering(numbering_scheme, chapter_number)
+        } else {
+          none
+        }
+
+        block(below: 0.5em)[
+          #smallcaps(subtitle) #h(1fr) #num_text #chapter.name
+        ]
+        line(length: 100%)
       }
-
-      let chapter = (
-        name: chapter_heading.body,
-        number: chapter_number,
-      )
-
-      let can_number_chapter = (not is_outline_page.at(loc)) and chapter_number != none
-      let should_number_chapter = not skip_chapter_numbers_for.contains(chapter.name.text)
-
-      let num_text = if can_number_chapter and should_number_chapter {
-        numbering(numbering_scheme, chapter_number)
-      } else {
-        none
-      }
-
-      block(below: 0.5em)[
-        #smallcaps(subtitle) #h(1fr) #num_text #chapter.name
-      ]
-      line(length: 100%)
     }
   }
-})
+)
 
-#let pagefooter(date: none, lang: none) = locate(loc => {
-  let pagenumber = counter(page).at(loc).first()
+#let pagefooter(date: none, lang: none) = (
+  context {
+    let pagenumber = counter(page).get().first()
 
-  if pagenumber != 0 [
-    #line(length: 100%)
-    #columns(3)[
-      // #author.name, #username
+    if pagenumber != 0 [
+      #line(length: 100%)
+      #columns(3)[
+        // #author.name, #username
 
-      #colbreak()
+        #colbreak()
 
-      #set align(center)
+        #set align(center)
 
-      #if is_outline_page.at(loc) or last_outline_page.at(loc) {
-        counter(page).display("i")
-      } else {
-        counter(page).display()
-      }
+        #if is_outline_page.get() or last_outline_page.get() {
+          counter(page).display("i")
+        } else {
+          counter(page).display()
+        }
 
-      #colbreak()
+        #colbreak()
 
-      #set align(right)
+        #set align(right)
 
-      #format_date(date, lang: lang)
+        #format_date(date, lang: lang)
+      ]
     ]
-  ]
-})
+  }
+)
 
 #let title_page(
   title: none,
