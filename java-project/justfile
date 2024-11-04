@@ -1,9 +1,9 @@
 # Uses the new PowerShell, and not the old "Windows PowerShell" (powershell.exe).
 set windows-shell := ["pwsh.exe", "-NoLogo", "-Command"]
 
-# Build the project using maven
+# Build a JAR file of the app using maven
 build:
-    mvn compile
+    mvn package "-Dmaven.test.skip"
 
 # Compile and run
 run:
