@@ -141,7 +141,7 @@ Som ni såg så använde jag mina additionskunskaper, som jag demonstrerade i av
   ),
 )
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquet tempus mattis. Vivamus molestie non ligula at tristique. Fusce tincidunt a turpis eget pretium. Vivamus odio orci, congue sit amet risus a, consequat feugiat eros. Suspendisse potenti. Pellentesque feugiat malesuada egestas. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque aliquet porttitor tempus. In et lectus nulla. Aliquam vel arcu aliquam, porta felis scelerisque, placerat massa. Donec dapibus pulvinar interdum. In at lobortis sem. Nam lacinia ex non tempor pulvinar. Nullam luctus blandit sem a facilisis. Duis et magna pretium, tempor mauris at, congue eros.
+#lorem(50)
 
 #bibliography(
   "reference.yml",
