@@ -7,9 +7,9 @@
   it
     .children
     .map(child => [
-        #strong[#child.term]
-        #block(inset: (left: 1.5em, top: -0.4em))[#child.description]
-      ])
+      #strong[#child.term]
+      #block(inset: (left: 1.5em, top: -0.4em))[#child.description]
+    ])
     .join()
 }
 
@@ -47,7 +47,7 @@
 
 #let page_header(
   subtitle: none, // Text in the top-left corner
-  skip_chapter_numbers_for: () // A list of chapter names to skip numbering for
+  skip_chapter_numbers_for: (), // A list of chapter names to skip numbering for
 ) = (
   context {
     let page_number = counter(page).get().first()
@@ -258,7 +258,7 @@
   region: "SE",
   font: (),
   fontsize: 12pt,
-  outline: outline(indent: true),
+  outline: outline(),
   doc,
 ) = {
   show figure.where(kind: table): set figure.caption(position: top)
@@ -328,7 +328,6 @@
   set heading(numbering: "1.1")
 
   if (outline != none) {
-
     is_outline_page.update(true)
 
     pagebreak()
