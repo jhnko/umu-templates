@@ -27,7 +27,8 @@
 #show figure.where(kind: table): set figure.caption(position: top)
 
 // A list of authors
-#let authors = ((
+#let authors = (
+  (
     name: "Sven Svensson",
     // username: "c00abc",
     email: "c00abc@cs.umu.se",
@@ -60,8 +61,8 @@
 
 // See template.typ for more parameters.
 #show: doc => conf(
-  title: [#course.code #course.name], // Feel free to use `title` directly
-  subtitle: [#assignment_title #sym.dash.em #assignment.name],
+  title: [#assignment_title #sym.dash.em #assignment.name], // Feel free to use `title` directly
+  subtitle: [#course.code #course.name],
   margin: (x: 1.25in, y: 1.5in),
   lang: lang,
   authors: authors,

@@ -152,7 +152,6 @@
       #block(
         inset: 1em,
         above: 4em,
-        width: 75%,
         below: 1em,
       )[
         #text(size: 24pt)[
