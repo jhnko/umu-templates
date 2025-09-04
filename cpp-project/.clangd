@@ -1,2 +1,21 @@
 CompileFlags:
     CompilationDatabase: build/release
+Diagnostics:
+    ClangTidy:
+        CheckOptions:
+            readability-identifier-naming.VariableCase: snake_case
+            readability-identifier-naming.FunctionCase: snake_case
+            readability-identifier-naming.ClassCase: CamelCase
+            readability-identifier-naming.StructCase: CamelCase
+            readability-identifier-naming.EnumCase: CamelCase
+            readability-identifier-naming.EnumConstantCase: SCREAMING_SNAKE_CASE
+            readability-identifier-naming.ConstantCase: SCREAMING_SNAKE_CASE
+            readability-identifier-naming.ParameterCase: snake_case
+            readability-identifier-naming.MemberCase: snake_case
+            readability-identifier-naming.NamespaceCase: snake_case
+        FastCheckFilter: None
+        Add:
+            - modernize-*
+            - misc-*
+            - performance-*
+            - readability-*
