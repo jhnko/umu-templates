@@ -1,0 +1,26 @@
+# CMakeLists.txt dictates the following variable
+PROJECT_NAME := "hello"
+
+# CMakePresets.json dictates the following variables
+BUILD_DIR := "build"
+RELEASE_DIR := "build/release"
+DEBUG_DIR := "build/debug"
+
+RELEASE_BIN := RELEASE_DIR + "/" + PROJECT_NAME
+DEBUG_BIN := DEBUG_DIR + "/" + PROJECT_NAME
+
+# See CMakePresets.json for the available presets.
+build:
+    cmake --preset release
+    cmake --build --preset release
+
+build-debug:
+    cmake --preset debug
+    cmake --build --preset debug
+
+run: build
+    {{RELEASE_BIN}}
+
+clean:
+    rm -rf {{BUILD_DIR}} # See the `binaryDir` fields in CmakePresets.json
+

@@ -1,0 +1,45 @@
+{
+	"version": 10,
+	"configurePresets": [
+		{
+			"name": "default",
+			"generator": "Ninja",
+			"cacheVariables": {
+				"CMAKE_C_COMPILER": "clang",
+				"CMAKE_CXX_COMPILER": "clang++"
+			}
+		},
+		{
+			"name": "release",
+			"displayName": "Release",
+			"inherits": "default",
+			"binaryDir": "build/release",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release"
+			}
+		},
+		{
+			"name": "debug",
+			"displayName": "Debug",
+			"inherits": "default",
+			"binaryDir": "build/debug",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		}
+	],
+	"buildPresets": [
+		{
+			"name": "release",
+			"displayName": "Release",
+			"configurePreset": "release",
+			"description": "An optimized release build"
+		},
+		{
+			"name": "debug",
+			"displayName": "Debug",
+			"configurePreset": "debug",
+			"description": "A build with debug support"
+		}
+	]
+}
