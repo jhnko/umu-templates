@@ -12,10 +12,18 @@ set(SRC
 # This list is just SRC with each item having "src/" prepended.
 # SRC_PATHS = SRC.map(path => "src/" + path)
 set(SRC_PATHS "")  # Empty list to store results
-
 foreach(path IN LISTS SRC)
     list(APPEND SRC_PATHS "src/${path}")
 endforeach()
 
 add_executable("${PROJECT_NAME}" ${SRC_PATHS})
 target_compile_features("${PROJECT_NAME}" PRIVATE cxx_std_23) # Set the C++ standard to use
+
+# From a .cpp in any subdirectory of src/, allow doing
+# ```cpp
+# #include "foo/bar/baz.hpp"
+# ```
+# This is like adding the flag -Isrc/
+target_include_directories("${PROJECT_NAME}" 
+   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
