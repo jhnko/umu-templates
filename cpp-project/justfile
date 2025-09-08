@@ -1,7 +1,7 @@
-# CMakeLists.txt dictates the following variable
+# Make sure the following matches the value in CMakeLists.txt
 PROJECT_NAME := "hello"
 
-# CMakePresets.json dictates the following variables
+# Make sure the following matches the values in CMakePresets.json
 BUILD_DIR := "build"
 RELEASE_DIR := "build/release"
 DEBUG_DIR := "build/debug"
