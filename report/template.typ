@@ -56,7 +56,9 @@
 
     let chapter_headings = query(heading.where(level: 1)).rev()
 
-    let chapter_heading = chapter_headings.find(h => h.location().page() <= here().page())
+    let chapter_heading = chapter_headings.find(h => (
+      h.location().page() <= here().page()
+    ))
 
     if (chapter_heading == none) {
       return
@@ -77,8 +79,12 @@
           number: chapter_number,
         )
 
-        let can_number_chapter = (not is_outline_page.get()) and chapter_number != none
-        let should_number_chapter = not skip_chapter_numbers_for.contains(chapter.name.text)
+        let can_number_chapter = (
+          (not is_outline_page.get()) and chapter_number != none
+        )
+        let should_number_chapter = not skip_chapter_numbers_for.contains(
+          chapter.name.text,
+        )
 
         let num_text = if can_number_chapter and should_number_chapter {
           numbering(numbering_scheme, chapter_number)
@@ -159,7 +165,6 @@
         ]
       ]]
   }
-
 
   if subtitle != none {
     align(
@@ -255,7 +260,7 @@
   paper: "a4",
   lang: "sv",
   region: "SE",
-  font: (),
+  font: none,
   fontsize: 12pt,
   outline: outline(),
   doc,
@@ -305,13 +310,15 @@
     ),
   )
 
-
   set text(
     lang: lang,
     region: region,
-    font: font,
     size: fontsize,
   )
+
+  if font != none {
+    set text(font: font)
+  }
 
   title_page(
     title: title,
